@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-iafox-com-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: ip-webapp-staging
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - '*.test.iafox.com'
+    secretName: test-iafox-com-letsencrypt
+  rules:
+  - host: helloweb.test.iafox.com
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: helloweb-backend
+          servicePort: 8080
+  - host: demo1.test.iafox.com
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: demo1-svc
+          servicePort: 80
+      - path: /firmware/*
+        backend:
+          serviceName: bucket-proxy-backend
+          servicePort: 80
