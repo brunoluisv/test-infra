@@ -17,8 +17,8 @@ pipeline {
     }
     stage('Verify files'){
       steps {
-        cat iafox-deploys.yaml
-        cat iafox-ingress.yaml
+        sh "cat iafox-deploys.yaml"
+        sh "cat iafox-ingress.yaml"
       }
     }
     stage('Sanity Check'){
