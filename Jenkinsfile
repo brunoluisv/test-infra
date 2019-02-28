@@ -10,7 +10,8 @@ pipeline {
       steps{
       sh '''
         alias render_template='python -c "from jinja2 import Template; import sys; print(Template(sys.stdin.read()).render());"'
-        cat job.yaml.jinja2 | render_template > jobs.yaml
+        cat iafox-test.yaml.jinja2 | render_template > iafox.yaml
+        cat iafox.yaml
       '''
       }
     }
