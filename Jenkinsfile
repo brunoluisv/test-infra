@@ -8,7 +8,8 @@ pipeline {
     }
     stage('Generate jobs.yaml'){
       steps {
-        sh "cat iafox.yaml.jinja2 | render_template > jobs.yaml"
+        alias render_template='python -c "from jinja2 import Template; import sys; print(Template(sys.stdin.read()).render());"'
+        sh "cat iafox-test.yaml.jinja2 | render_template > jobs.yaml"
       }
     }
     stage('Generate ingress'){
