@@ -12,5 +12,16 @@ pipeline {
         sh "cat jobs.yaml"
       }
     }
+    stage('Sanity Check'){
+      steps{
+        input "Seguir para deploy da imagem?"
+      }
+    }
+    stage('Deploy to Kubernetes'){
+      steps{
+        sh "kubectl apply -f jobs.yaml"
+        sh "kubectl apply -f iafox-ingress.yaml"
+      }
+    }
   }
 }
