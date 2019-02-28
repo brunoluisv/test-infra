@@ -1,0 +1,68 @@
+{%- set params = [{ "name": "demo1", "version": "webapp-3.1.12", "sqlserver": "iafox-test.database.windows.net", "sqluser": "svc_iafox_test@iafox-test", "sqlpwd": "Industria4.0", "dbname": "ts-demo1", "port": "1433" }]
+%}
+{%- for p in params %}
+{%- set name = p["name"] %}
+{%- set version = p["version"] %}
+{%- set sqlserver = p["sqluser"] %}
+{%- set sqluser = p["sqluser"] %}
+{%- set sqlpwd = p["sqlpwd"] %}
+{%- set dbname = p["dbname"] %}
+{%- set port = p["port"] %}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ name }}-deploy
+  labels:
+    app: {{ name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ name }}
+  template:
+    metadata:
+      labels:
+        app: {{ name }}
+    spec:
+      containers:
+      - name: {{ name }}
+        image: gcr.io/iafox-staging/iafox:{{ version }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: sqlserver
+          value: "{{ sqlserver }}"
+        - name: port
+          value: "{{ port }}"
+        - name: dbuser
+          value: "{{ sqluser }}"
+        - name: dbpassword
+          value: "{{ sqlpwd }}"
+        - name: dbname
+          value: "{{ dbname }}"
+        - name: dburl
+          value: "{{ sqlserver }}:{{ port }}"
+
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "100m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ name }}-svc
+spec:
+  selector:
+    app: {{ name }}
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: NodePort
+
+---
+{%- endfor %}
