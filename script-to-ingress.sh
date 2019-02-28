@@ -22,13 +22,13 @@ echo "          serviceName: helloweb-backend" >> iafox-ingress.yaml
 echo "          servicePort: 8080" >> iafox-ingress.yaml
 
 i=0
-echo "$(tput setaf 1)--------------------------------------"
-echo "$(tput setaf 1)======= VALUES FROM CONFIG.JSON ======="
-echo "$(tput setaf 1)--------------------------------------"
+echo "--------------------------------------"
+echo "======= VALUES FROM CONFIG.JSON ======="
+echo "--------------------------------------"
 while [ $i -lt $max ]
 do
     CUSTOMER=$(jq -r '.[] | .['$i'] | .name' config.json)
-    echo "$(tput sgr 0)name: $(tput setaf 2)$CUSTOMER"
+    echo "name: $CUSTOMER"
     echo "  - host: $CUSTOMER.test.iafox.com" >> iafox-ingress.yaml
     echo "    http:" >> iafox-ingress.yaml
     echo "      paths:" >> iafox-ingress.yaml
@@ -40,13 +40,10 @@ do
     echo "        backend:" >> iafox-ingress.yaml
     echo "          serviceName: bucket-proxy-backend" >> iafox-ingress.yaml
     echo "          servicePort: 80" >> iafox-ingress.yaml
-    tput sgr0
 #    kubectl apply -f customers/iafox-$CUSTOMER.yaml
 
     let i++
 
-    echo "$(tput setaf 1)--------------------------------------"
+    echo "--------------------------------------"
 done
-tput sgr0
 # kubectl apply -f iafox-ingress.yaml
-tput sgr0
